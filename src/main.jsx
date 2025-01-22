@@ -7,10 +7,17 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-quill/dist/quill.snow.css";
 import { ToastContainer } from "react-toastify";
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/store/index.js";
+import { PersistGate } from "redux-persist/integration/react";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <ToastContainer position="top-right" />
-    <App />
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <ToastContainer position="top-right" />
+        <App />
+      </PersistGate>
+    </Provider>
   </StrictMode>
 );
