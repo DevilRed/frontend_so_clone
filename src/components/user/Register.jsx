@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 import { Spinner } from "../layouts/Spinner";
 import useValidation from "../../hooks/useValidation";
 import { getEnvironments } from "../../helpers/getEnvironments";
@@ -16,6 +17,13 @@ export const Register = () => {
   const [errors, setErrors] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn === true) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
 
   const registerUser = async (e) => {
     e.preventDefault();

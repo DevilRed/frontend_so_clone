@@ -1,10 +1,16 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Spinner } from "../layouts/Spinner";
 import useValidation from "../../hooks/useValidation";
 import { getEnvironments } from "../../helpers/getEnvironments";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCurrentUser,
+  setLoggedInOut,
+  setToken,
+} from "../../redux/slices/userSlice";
 
 export const Login = () => {
   const { VITE_BASE_URL } = getEnvironments();
@@ -16,6 +22,14 @@ export const Login = () => {
   const [errors, setErrors] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((state) => state.user.isLoggedIn);
+
+  useEffect(() => {
+    if (isLoggedIn === true) {
+      navigate("/");
+    }
+  }, [isLoggedIn]);
 
   const loginUser = async (e) => {
     e.preventDefault();
@@ -28,6 +42,9 @@ export const Login = () => {
         user
       );
       setSubmitting(false);
+      dispatch(setLoggedInOut(true));
+      dispatch(setCurrentUser(response.data.data));
+      dispatch(setToken(response.data.access_token));
       toast.success(response.data.message);
       navigate("/");
     } catch (error) {
