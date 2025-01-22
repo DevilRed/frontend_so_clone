@@ -1,5 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { Spinner } from "../layouts/Spinner";
+import useValidation from "../../hooks/useValidation";
 
 export const Register = () => {
   const [user, setUser] = useState({
@@ -8,12 +12,29 @@ export const Register = () => {
     password: "",
   });
   const [errors, setErrors] = useState([]);
-  const [submitting, isSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const registerUser = async (e) => {
     e.preventDefault();
-    console.log(user);
+    setSubmitting(true);
+    setErrors([]);
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/api/user/register",
+        user
+      ); // from 7.1 min 24.00
+      setSubmitting(false);
+      toast.success(response.data.message);
+      navigate("/login");
+    } catch (error) {
+      setSubmitting(false);
+      if (error?.response?.status === 422) {
+        setErrors(error.response.data.errors);
+      }
+      console.log(error);
+    }
   };
   return (
     <div className="container">
@@ -43,6 +64,7 @@ export const Register = () => {
                     }
                     value={user.name}
                   />
+                  {useValidation(errors, "name")}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="email">Email*</label>
@@ -58,6 +80,7 @@ export const Register = () => {
                     }
                     value={user.email}
                   />
+                  {useValidation(errors, "email")}
                 </div>
                 <div className="mb-3">
                   <label htmlFor="password">Password*</label>
@@ -73,11 +96,16 @@ export const Register = () => {
                     }
                     value={user.password}
                   />
+                  {useValidation(errors, "password")}
                 </div>
                 <div className="mb-3">
-                  <button className="btn btn-sm btn-dark" type="submit">
-                    Submit
-                  </button>
+                  {submitting ? (
+                    <Spinner />
+                  ) : (
+                    <button className="btn btn-sm btn-dark" type="submit">
+                      Submit
+                    </button>
+                  )}
                 </div>
               </form>
             </div>
