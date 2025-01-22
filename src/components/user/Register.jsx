@@ -4,8 +4,10 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Spinner } from "../layouts/Spinner";
 import useValidation from "../../hooks/useValidation";
+import { getEnvironments } from "../../helpers/getEnvironments";
 
 export const Register = () => {
+  const { VITE_BASE_URL } = getEnvironments();
   const [user, setUser] = useState({
     name: "",
     email: "",
@@ -22,9 +24,9 @@ export const Register = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/api/user/register",
+        `${VITE_BASE_URL}/api/user/register`,
         user
-      ); // from 7.1 min 24.00
+      );
       setSubmitting(false);
       toast.success(response.data.message);
       navigate("/login");
