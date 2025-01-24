@@ -1,6 +1,36 @@
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { getEnvironments } from "../../helpers/getEnvironments";
+import { getConfig } from "../../helpers/utilities";
+import {
+  setCurrentUser,
+  setLoggedInOut,
+  setToken,
+} from "../../redux/slices/userSlice";
+import { toast } from "react-toastify";
 
 export const Header = () => {
+  const { VITE_BASE_URL } = getEnvironments();
+  const { isLoggedIn, token, user } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const logoutUser = async () => {
+    try {
+      const response = await axios.post(
+        `${VITE_BASE_URL}/api/user/logout`,
+        null,
+        getConfig(token)
+      );
+      dispatch(setLoggedInOut(false));
+      dispatch(setCurrentUser(null));
+      dispatch(setToken(""));
+      toast.success(response.data.message);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary">
       <div className="container-fluid">
@@ -25,16 +55,33 @@ export const Header = () => {
                 <i className="bi bi-house"></i> Home
               </Link>
             </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/register">
-                Register
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">
-                Login
-              </Link>
-            </li>
+            {isLoggedIn ? (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    <i className="bi bi-person"></i> {user?.name}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <button className="nav-link" onClick={() => logoutUser()}>
+                    <i className="bi bi-person-fill-down"></i> Logout
+                  </button>
+                </li>
+              </>
+            ) : (
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/register">
+                    <i className="bi bi-person-add"></i> Register
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">
+                    <i className="bi bi-person-fill-up"></i> Login
+                  </Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       </div>
