@@ -7,3 +7,7 @@ export const getConfig = (token, contentType) => {
   };
   return config;
 };
+
+export const setActiveLink = (location, path) => {
+  return location.pathname === path ? "active" : "";
+};
