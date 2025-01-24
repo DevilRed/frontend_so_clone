@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { getEnvironments } from "../../helpers/getEnvironments";
-import { getConfig } from "../../helpers/utilities";
+import { getConfig, setActiveLink } from "../../helpers/utilities";
 import {
   setCurrentUser,
   setLoggedInOut,
@@ -16,6 +16,8 @@ export const Header = () => {
   const { isLoggedIn, token, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const getNavLinkClass = (path) => `nav-link ${setActiveLink(location, path)}`;
 
   useEffect(() => {
     const getLoggedInUser = async () => {
@@ -76,14 +78,14 @@ export const Header = () => {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">
+              <Link className={getNavLinkClass("/")} aria-current="page" to="/">
                 <i className="bi bi-house"></i> Home
               </Link>
             </li>
             {isLoggedIn ? (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/profile">
+                  <Link className={getNavLinkClass("/profile")} to="/profile">
                     <i className="bi bi-person"></i> {user?.name}
                   </Link>
                 </li>
@@ -96,12 +98,12 @@ export const Header = () => {
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/register">
+                  <Link className={getNavLinkClass("/register")} to="/register">
                     <i className="bi bi-person-add"></i> Register
                   </Link>
                 </li>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">
+                  <Link className={getNavLinkClass("/login")} to="/login">
                     <i className="bi bi-person-fill-up"></i> Login
                   </Link>
                 </li>
