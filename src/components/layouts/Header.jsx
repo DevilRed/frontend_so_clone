@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -15,6 +16,30 @@ export const Header = () => {
   const { isLoggedIn, token, user } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const getLoggedInUser = async () => {
+      try {
+        const response = await axios.get(
+          `${VITE_BASE_URL}/api/user`,
+          getConfig(token)
+        );
+        dispatch(setCurrentUser(response.data.data));
+      } catch (error) {
+        // check if token has expired
+        if (error?.response?.status === 401) {
+          dispatch(setLoggedInOut(false));
+          dispatch(setCurrentUser(null));
+          dispatch(setToken(""));
+        }
+        console.log(error);
+      }
+    };
+    if (token) {
+      getLoggedInUser();
+    }
+  }, [token]);
+
   const logoutUser = async () => {
     try {
       const response = await axios.post(
