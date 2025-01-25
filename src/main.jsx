@@ -16,7 +16,13 @@ createRoot(document.getElementById("root")).render(
     <Provider store={store}>
       <PersistGate persistor={persistor}>
         <ToastContainer position="top-right" />
-        <App />
+        <div className="container">
+          <div className="card mb-4 bg-light">
+            <div className="card-body">
+              <App />
+            </div>
+          </div>
+        </div>
       </PersistGate>
     </Provider>
   </StrictMode>
