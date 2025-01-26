@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getEnvironments } from "../helpers/getEnvironments";
 import axios from "axios";
 import { QuestionList } from "./questions/QuestionList";
+import { Spinner } from "./layouts/Spinner";
 
 export const Home = () => {
   const [questions, setQuestions] = useState([]);
@@ -25,6 +26,14 @@ export const Home = () => {
     };
     fetchQuestions();
   }, [page]);
+
+  if (loading) {
+    return (
+      <div className="d-flex- justify-content-cente my-3">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <>
