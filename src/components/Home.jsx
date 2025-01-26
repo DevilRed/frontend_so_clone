@@ -27,6 +27,11 @@ export const Home = () => {
     fetchQuestions();
   }, [page]);
 
+  const fetchNexPrevQuestionPage = (link) => {
+    const url = new URL(link);
+    setPage(url.searchParams.get("page"));
+  };
+
   if (loading) {
     return (
       <div className="d-flex- justify-content-cente my-3">
@@ -40,7 +45,10 @@ export const Home = () => {
       <div className="row my-5">
         <div className="col-md-10 mx-auto">
           <div className="row">
-            <QuestionList questions={questions} />
+            <QuestionList
+              questions={questions}
+              fetchQuestionsPage={fetchNexPrevQuestionPage}
+            />
           </div>
         </div>
       </div>
