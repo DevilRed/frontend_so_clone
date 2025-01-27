@@ -11,9 +11,11 @@ import {
   REGISTER,
 } from "redux-persist";
 import userReducer from "../slices/userSlice";
+import questionsReducer from "../slices/questionSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
+  questions: questionsReducer,
 });
 
 // config persist, its' like local storage
