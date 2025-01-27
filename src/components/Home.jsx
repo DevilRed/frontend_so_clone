@@ -1,35 +1,20 @@
-import { useEffect, useState } from "react";
-import { getEnvironments } from "../helpers/getEnvironments";
-import axios from "axios";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchQuestions, setPage } from "../redux/slices/questionSlice";
 import { QuestionList } from "./questions/QuestionList";
 import { Spinner } from "./layouts/Spinner";
 
 export const Home = () => {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
-  const { VITE_BASE_URL } = getEnvironments();
+  const dispatch = useDispatch();
+  const { questions, loading, page } = useSelector((state) => state.questions);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${VITE_BASE_URL}/api/questions?page=${page}`
-        );
-        setQuestions(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        setLoading(false);
-      }
-    };
-    fetchQuestions();
-  }, [page]);
+    dispatch(fetchQuestions({ page }));
+  }, [dispatch, page]);
 
   const fetchNexPrevQuestionPage = (link) => {
     const url = new URL(link);
-    setPage(url.searchParams.get("page"));
+    dispatch(setPage(Number(url.searchParams.get("page"))));
   };
 
   if (loading) {
