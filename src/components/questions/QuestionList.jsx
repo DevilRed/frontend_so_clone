@@ -9,7 +9,12 @@ export const QuestionList = ({ fetchQuestionsPage }) => {
         <li key={index} className={`page-item ${!link.url ? "disabled" : ""}`}>
           <a
             href="#"
-            onClick={() => fetchQuestionsPage(link.url)}
+            onClick={(e) => {
+              e.preventDefault();
+              if (link.url) {
+                fetchQuestionsPage(link.url);
+              }
+            }}
             className={`page-link ${link.active ? "active" : ""}`}
           >
             {link.label}
@@ -23,6 +28,7 @@ export const QuestionList = ({ fetchQuestionsPage }) => {
       {questions?.data?.map((question) => (
         <QuestionListItem key={question.id} question={question} />
       ))}
+      {/* pagination links with label counting items */}
       <div className="mt-4 d-flex justify-content-between">
         {questions?.meta && (
           <div className="text-muted">
