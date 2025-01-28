@@ -19,7 +19,7 @@ export const Home = () => {
 
   if (loading) {
     return (
-      <div className="d-flex- justify-content-cente my-3">
+      <div className="d-flex justify-content-center my-3">
         <Spinner />
       </div>
     );
@@ -30,10 +30,7 @@ export const Home = () => {
       <div className="row my-5">
         <div className="col-md-10 mx-auto">
           <div className="row">
-            <QuestionList
-              questions={questions}
-              fetchQuestionsPage={fetchNexPrevQuestionPage}
-            />
+            <QuestionList fetchQuestionsPage={fetchNexPrevQuestionPage} />
           </div>
         </div>
       </div>
