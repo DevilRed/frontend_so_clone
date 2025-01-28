@@ -1,21 +1,31 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchQuestions, setPage } from "../redux/slices/questionSlice";
+import {
+  fetchQuestions,
+  fetchNextPrevPage,
+  filterQuestionsByTag,
+  filterQuestionsByUser,
+  clearFilter,
+} from "../redux/slices/questionSlice";
 import { QuestionList } from "./questions/QuestionList";
 import { Spinner } from "./layouts/Spinner";
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const { questions, loading, page } = useSelector((state) => state.questions);
+  const { questions, loading, page, choosenTag, choosenUser } = useSelector(
+    (state) => state.questions
+  );
 
   useEffect(() => {
-    dispatch(fetchQuestions({ page }));
-  }, [dispatch, page]);
+    dispatch(fetchQuestions({ page, choosenTag, choosenUser }));
+  }, [dispatch, page, choosenTag, choosenUser]);
 
-  const fetchNexPrevQuestionPage = (link) => {
-    const url = new URL(link);
-    dispatch(setPage(Number(url.searchParams.get("page"))));
+  const handleFetchNextPrevQuestionPage = (url) => {
+    dispatch(fetchNextPrevPage(url));
   };
+  const handleFilterByUser = (user) => dispatch(filterQuestionsByUser(user));
+  const handleFilterByTag = (tag) => dispatch(filterQuestionsByTag(tag));
+  const handleClearFilter = () => dispatch(clearFilter());
 
   if (loading) {
     return (
@@ -30,7 +40,9 @@ export const Home = () => {
       <div className="row my-5">
         <div className="col-md-10 mx-auto">
           <div className="row">
-            <QuestionList fetchQuestionsPage={fetchNexPrevQuestionPage} />
+            <QuestionList
+              fetchQuestionsPage={handleFetchNextPrevQuestionPage}
+            />
           </div>
         </div>
       </div>
