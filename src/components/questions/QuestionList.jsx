@@ -1,6 +1,8 @@
+import { useSelector } from "react-redux";
 import { QuestionListItem } from "./QuestionListItem";
 
-export const QuestionList = ({ questions, fetchQuestionsPage }) => {
+export const QuestionList = ({ fetchQuestionsPage }) => {
+  const { questions } = useSelector((state) => state.questions);
   const renderPaginationLinks = () => (
     <ul className="pagination">
       {questions?.meta?.links?.map((link, index) => (
