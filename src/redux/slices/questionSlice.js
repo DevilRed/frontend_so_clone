@@ -17,7 +17,11 @@ export const fetchQuestions = createAsyncThunk(
 
     try {
       const response = await axios.get(query);
-      return response.data;
+      return {
+        data: response.data.data, // List of questions
+        meta: response.data.meta, // Pagination metadata
+        links: response.data.meta.links, // Links for navigation
+      };
     } catch (error) {
       return rejectWithValue(error.message);
     }
@@ -27,12 +31,17 @@ export const fetchQuestions = createAsyncThunk(
 const questionsSlice = createSlice({
   name: "questions",
   initialState: {
-    questions: [],
+    questions: {
+      data: [], // List of questions
+      meta: null, // Pagination metadata
+    },
     loading: false,
     page: 1,
     error: null,
     choosenTag: "",
     choosenUser: "",
+    nexPageLink: null,
+    prevPageLink: null,
   },
   reducers: {
     setPage: (state, action) => {
@@ -53,6 +62,10 @@ const questionsSlice = createSlice({
       state.choosenTag = "";
       state.page = 1;
     },
+    fetchNextPrevPage: (state, action) => {
+      const url = new URL(action.payload);
+      state.page = Number(url.searchParams.get("page"));
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -63,6 +76,11 @@ const questionsSlice = createSlice({
       .addCase(fetchQuestions.fulfilled, (state, action) => {
         state.loading = false;
         state.questions = action.payload;
+
+        // save pagination links to state (if available)
+        const links = action.payload.links || {};
+        state.nextPageLink = links.next || null;
+        state.prevPageLink = links.prev || null;
       })
       .addCase(fetchQuestions.rejected, (state, action) => {
         state.loading = false;
@@ -76,6 +94,7 @@ export const {
   filterQuestionsByTag,
   filterQuestionsByUser,
   clearFilter,
+  fetchNextPrevPage,
 } = questionsSlice.actions;
 
 export default questionsSlice.reducer;
