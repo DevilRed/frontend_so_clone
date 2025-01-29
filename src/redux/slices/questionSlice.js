@@ -16,7 +16,12 @@ export const fetchQuestions = createAsyncThunk(
     }
 
     try {
-      const response = await axios.get(query);
+      let response = null;
+      if (choosenUser) {
+        response = await axios.post(query, { user_id: choosenUser });
+      } else {
+        response = await axios.get(query);
+      }
       return {
         data: response.data.data, // List of questions
         meta: response.data.meta, // Pagination metadata

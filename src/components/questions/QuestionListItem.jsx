@@ -1,6 +1,10 @@
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { filterQuestionsByUser } from "../../redux/slices/questionSlice";
 
 export const QuestionListItem = ({ question }) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="card mb-2">
       <div className="card-body">
@@ -47,7 +51,15 @@ export const QuestionListItem = ({ question }) => {
                 width={30}
                 height={30}
               />
-              <span className="text-primary mx-2">{question?.user?.name}</span>
+              <span
+                className="text-primary mx-2"
+                onClick={() => {
+                  dispatch(filterQuestionsByUser(question?.user?.id));
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                {question?.user?.name}
+              </span>
               <span className="text-muted">{question?.created_at}</span>
             </div>
             <div className="d-flex flex-wrap">
