@@ -47,6 +47,7 @@ const questionsSlice = createSlice({
     choosenUser: "",
     nexPageLink: null,
     prevPageLink: null,
+    showAll: false,
   },
   reducers: {
     setPage: (state, action) => {
@@ -56,16 +57,19 @@ const questionsSlice = createSlice({
       state.choosenTag = action.payload;
       state.choosenUser = "";
       state.page = 1;
+      state.showAll = true;
     },
     filterQuestionsByUser: (state, action) => {
       state.choosenUser = action.payload;
       state.choosenTag = "";
       state.page = 1;
+      state.showAll = true;
     },
     clearFilter: (state) => {
       state.choosenUser = "";
       state.choosenTag = "";
       state.page = 1;
+      state.showAll = false;
     },
     fetchNextPrevPage: (state, action) => {
       const url = new URL(action.payload);

@@ -12,7 +12,7 @@ import { Spinner } from "./layouts/Spinner";
 
 export const Home = () => {
   const dispatch = useDispatch();
-  const { questions, loading, page, choosenTag, choosenUser } = useSelector(
+  const { showAll, loading, page, choosenTag, choosenUser } = useSelector(
     (state) => state.questions
   );
 
@@ -23,7 +23,6 @@ export const Home = () => {
   const handleFetchNextPrevQuestionPage = (url) => {
     dispatch(fetchNextPrevPage(url));
   };
-  const handleFilterByUser = (user) => dispatch(filterQuestionsByUser(user));
   const handleFilterByTag = (tag) => dispatch(filterQuestionsByTag(tag));
   const handleClearFilter = () => dispatch(clearFilter());
 
@@ -40,6 +39,15 @@ export const Home = () => {
       <div className="row my-5">
         <div className="col-md-10 mx-auto">
           <div className="row">
+            {showAll && (
+              <div className="col-md-12">
+                <div className="mb-2">
+                  <button className="btn btn-dark" onClick={handleClearFilter}>
+                    All questions
+                  </button>
+                </div>
+              </div>
+            )}
             <QuestionList
               fetchQuestionsPage={handleFetchNextPrevQuestionPage}
             />
