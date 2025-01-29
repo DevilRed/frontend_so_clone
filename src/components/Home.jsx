@@ -4,17 +4,18 @@ import {
   fetchQuestions,
   fetchNextPrevPage,
   filterQuestionsByTag,
-  filterQuestionsByUser,
   clearFilter,
 } from "../redux/slices/questionSlice";
 import { QuestionList } from "./questions/QuestionList";
 import { Spinner } from "./layouts/Spinner";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
   const dispatch = useDispatch();
   const { showAll, loading, page, choosenTag, choosenUser } = useSelector(
     (state) => state.questions
   );
+  const { isLoggedIn } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchQuestions({ page, choosenTag, choosenUser }));
@@ -39,6 +40,13 @@ export const Home = () => {
       <div className="row my-5">
         <div className="col-md-10 mx-auto">
           <div className="row">
+            {isLoggedIn && (
+              <div className="d-flex justify-content-end mb-2">
+                <Link to="/ask" className="btn btn-primary">
+                  <i className="bi bi-pencil"></i> Ask
+                </Link>
+              </div>
+            )}
             {showAll && (
               <div className="col-md-12">
                 <div className="mb-2">
