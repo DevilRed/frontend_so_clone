@@ -65,7 +65,7 @@ export const QuestionListItem = ({ question }) => {
             <div className="d-flex flex-wrap">
               {question?.tags?.map((tag, index) => (
                 <span key={index} className="badge bg-primary me-1">
-                  {tag.name}
+                  {tag}
                 </span>
               ))}
             </div>
