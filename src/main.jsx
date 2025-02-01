@@ -6,6 +6,7 @@ import "bootstrap/dist/js/bootstrap.min.js";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-quill/dist/quill.snow.css";
+import "react-tagsinput/react-tagsinput.css";
 import { ToastContainer } from "react-toastify";
 import { Provider } from "react-redux";
 import { store, persistor } from "./redux/store/index.js";
