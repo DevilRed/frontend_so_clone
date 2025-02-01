@@ -1,6 +1,9 @@
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { filterQuestionsByUser } from "../../redux/slices/questionSlice";
+import {
+  filterQuestionsByUser,
+  filterQuestionsByTag,
+} from "../../redux/slices/questionSlice";
 
 export const QuestionListItem = ({ question }) => {
   const dispatch = useDispatch();
@@ -64,7 +67,14 @@ export const QuestionListItem = ({ question }) => {
             </div>
             <div className="d-flex flex-wrap">
               {question?.tags?.map((tag, index) => (
-                <span key={index} className="badge bg-primary me-1">
+                <span
+                  key={index}
+                  className="badge bg-primary me-1"
+                  onClick={() => {
+                    dispatch(filterQuestionsByTag(tag));
+                  }}
+                  style={{ cursor: "pointer" }}
+                >
                   {tag}
                 </span>
               ))}
