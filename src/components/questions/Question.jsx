@@ -31,7 +31,7 @@ export const Question = () => {
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
-        // TODO update question with vote
+        dispatch(fetchQuestionBySlug({ slug }));
         toast.success(response.data.message);
       }
     } catch (error) {
