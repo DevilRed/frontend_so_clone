@@ -48,7 +48,7 @@ export const fetchQuestionBySlug = createAsyncThunk(
   }
 );
 
-const questionsSlice = createSlice({
+export const questionsSlice = createSlice({
   name: "questions",
   initialState: {
     questions: {
