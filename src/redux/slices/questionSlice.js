@@ -33,6 +33,21 @@ export const fetchQuestions = createAsyncThunk(
   }
 );
 
+export const fetchQuestionBySlug = createAsyncThunk(
+  "question/fetchQuestionBySlug",
+  async ({ slug }, { rejectWithValue }) => {
+    const query = `${VITE_BASE_URL}/api/question/${slug}/show`;
+    try {
+      const response = await axios.get(query);
+      return {
+        data: response.data.data,
+      };
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const questionsSlice = createSlice({
   name: "questions",
   initialState: {
@@ -40,6 +55,7 @@ const questionsSlice = createSlice({
       data: [], // List of questions
       meta: null, // Pagination metadata
     },
+    question: null,
     loading: false,
     page: 1,
     error: null,
@@ -94,6 +110,19 @@ const questionsSlice = createSlice({
       .addCase(fetchQuestions.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      });
+    builder
+      .addCase(fetchQuestionBySlug.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchQuestionBySlug.fulfilled, (state, action) => {
+        state.loading = false;
+        state.question = action.payload.data;
+      })
+      .addCase(fetchQuestionBySlug.rejected, (state) => {
+        state.loading = false;
+        state.error = "The question you are looking for does not exist.";
       });
   },
 });
