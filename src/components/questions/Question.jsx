@@ -4,16 +4,41 @@ import { Link, useParams } from "react-router-dom";
 import { Parser } from "html-to-react";
 import { fetchQuestionBySlug } from "../../redux/slices/questionSlice";
 import { Spinner } from "../layouts/Spinner";
+import { getConfig } from "../../helpers/utilities";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { getEnvironments } from "../../helpers/getEnvironments";
+
+const { VITE_BASE_URL } = getEnvironments();
 
 export const Question = () => {
   const dispatch = useDispatch();
   const { question, loading, error } = useSelector((state) => state.questions);
   const { slug } = useParams();
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const { isLoggedIn, token } = useSelector((state) => state.user);
 
   useEffect(() => {
     dispatch(fetchQuestionBySlug({ slug }));
   }, [slug, dispatch]);
+
+  const voteQuestion = async (slug, type) => {
+    try {
+      const response = await axios.put(
+        `${VITE_BASE_URL}/api/vote/${slug}/${type}/question`,
+        null,
+        getConfig(token)
+      );
+      if (response.data.error) {
+        toast.error(response.data.error);
+      } else {
+        // TODO update question with vote
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.error);
+      // console.log(error);
+    }
+  };
 
   if (error) {
     return (
@@ -62,7 +87,10 @@ export const Question = () => {
             <div className="row">
               <div className="col-md-3 d-flex flex-column align-itesm-center">
                 {isLoggedIn ? (
-                  <span className="voteUp">
+                  <span
+                    className="voteUp"
+                    onClick={() => voteQuestion(question.slug, "up")}
+                  >
                     <i className="bi bi-arrow-up-circle h2"></i>
                   </span>
                 ) : (
@@ -74,7 +102,10 @@ export const Question = () => {
                 <span className="fw-bold">{question?.score}</span>
 
                 {isLoggedIn ? (
-                  <span className="voteDown">
+                  <span
+                    className="voteDown"
+                    onClick={() => voteQuestion(question.slug, "down")}
+                  >
                     <i className="bi bi-arrow-down-circle h2"></i>
                   </span>
                 ) : (
