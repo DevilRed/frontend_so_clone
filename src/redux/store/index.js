@@ -27,17 +27,21 @@ const persistConfig = {
 // create presisted reducer
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
+export function setupStore(preloadedState) {
+  return configureStore({
+    reducer: persistedReducer,
+    // to avoid redux-persist error in console
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }),
+    preloadedState,
+  });
+}
 // create store
-const store = configureStore({
-  reducer: persistedReducer,
-  // to avoid redux-persist error in console
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-});
+const store = setupStore({});
 
 // create persistor
 const persistor = persistStore(store);
