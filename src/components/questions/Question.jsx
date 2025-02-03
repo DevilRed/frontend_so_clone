@@ -117,18 +117,19 @@ export const Question = () => {
               <div className="col-md-7">{Parser().parse(question?.body)}</div>
             </div>
           </div>
-        </div>
-        {question?.tags?.length > 0 && (
-          <div className="card-footer bg-white">
-            <div className="d-flex flex-wrap">
-              {question?.tags?.map((tag, index) => (
-                <span key={index} className="badge bg-primary me-1">
-                  {tag}
-                </span>
-              ))}
+
+          {question?.tags?.length > 0 && (
+            <div className="card-footer bg-white">
+              <div className="d-flex flex-wrap">
+                {question?.tags?.map((tag, index) => (
+                  <span key={index} className="badge bg-primary me-1">
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );
