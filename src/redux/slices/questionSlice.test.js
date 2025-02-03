@@ -6,9 +6,15 @@ import {
   filterQuestionsByUser,
   clearFilter,
   fetchNextPrevPage,
+  fetchQuestions,
 } from "./questionSlice";
+import { configureStore } from "@reduxjs/toolkit";
+import axios from "axios";
 
 import { initialState } from "../../../tests/fixtures/questionSliceFixture";
+
+// Mock axios
+vi.mock("axios");
 
 describe("questionSlice", () => {
   it("should set page", () => {
@@ -79,5 +85,59 @@ describe("questionSlice", () => {
 
     // Restore the original URL constructor
     global.URL = URL;
+  });
+});
+
+describe("questionSlice async thunks", () => {
+  it("should fetch questions successfully", async () => {
+    const mockData = {
+      data: {
+        data: [{ id: 1, title: "Question 1" }],
+        meta: { total: 1 },
+        links: { next: null, prev: null },
+      },
+    };
+
+    axios.get.mockResolvedValueOnce(mockData);
+
+    const store = configureStore({
+      reducer: {
+        questions: questionsSlice.reducer,
+      },
+    });
+
+    await store.dispatch(
+      fetchQuestions({ page: 1, choosenTag: "", choosenUser: "" })
+    );
+
+    const state = store.getState().questions;
+
+    expect(state.questions.data).toEqual(mockData.data.data);
+    expect(state.questions.meta).toEqual(mockData.data.meta);
+    expect(state.nextPageLink).toBeNull();
+    expect(state.prevPageLink).toBeNull();
+    expect(state.loading).toBe(false);
+    expect(state.error).toBeNull();
+  });
+
+  it("should handle fetch questions failure", async () => {
+    const errorMessage = "Network Error";
+
+    axios.get.mockRejectedValueOnce(new Error(errorMessage));
+
+    const store = configureStore({
+      reducer: {
+        questions: questionsSlice.reducer,
+      },
+    });
+
+    await store.dispatch(
+      fetchQuestions({ page: 1, choosenTag: "", choosenUser: "" })
+    );
+
+    const state = store.getState().questions;
+
+    expect(state.loading).toBe(false);
+    expect(state.error).toBe(errorMessage);
   });
 });
