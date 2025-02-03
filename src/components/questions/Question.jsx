@@ -8,6 +8,7 @@ import { getConfig } from "../../helpers/utilities";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { getEnvironments } from "../../helpers/getEnvironments";
+import { Answer } from "../answers/Answer";
 
 const { VITE_BASE_URL } = getEnvironments();
 
@@ -85,7 +86,7 @@ export const Question = () => {
           </div>
           <div className="card-body">
             <div className="row">
-              <div className="col-md-3 d-flex flex-column align-itesm-center">
+              <div className="col-md-3 d-flex flex-column align-items-center">
                 {isLoggedIn ? (
                   <span
                     className="voteUp"
@@ -129,6 +130,19 @@ export const Question = () => {
               </div>
             </div>
           )}
+        </div>
+        <div className="card bo-light mt-2">
+          <div className="card-header bg-white">
+            <h5 className="mt-2">
+              <i>{question?.answerCount}</i>
+            </h5>
+          </div>
+          <div className="card-body">
+            {question?.answers?.length > 0 &&
+              question.answers.map((answer) => (
+                <Answer key={answer.id} answer={answer} question={question} />
+              ))}
+          </div>
         </div>
       </div>
     </div>
