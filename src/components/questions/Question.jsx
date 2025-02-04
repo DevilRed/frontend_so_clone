@@ -56,7 +56,7 @@ export const Question = () => {
   }
   if (loading || !question) {
     return (
-      <div className="d-flex justify-content-center my-3">
+      <div className="d-flex justify-content-center my-3" data-testid="spinner">
         <Spinner />
       </div>
     );
@@ -90,12 +90,17 @@ export const Question = () => {
                 {isLoggedIn ? (
                   <span
                     className="voteUp"
+                    data-testid="vote-up-button"
                     onClick={() => voteQuestion(question.slug, "up")}
                   >
                     <i className="bi bi-arrow-up-circle h2"></i>
                   </span>
                 ) : (
-                  <Link to="/login" className="voteUp">
+                  <Link
+                    to="/login"
+                    className="voteUp"
+                    data-testid="vote-up-button"
+                  >
                     <i className="bi bi-arrow-up-circle h2"></i>
                   </Link>
                 )}
@@ -105,6 +110,7 @@ export const Question = () => {
                 {isLoggedIn ? (
                   <span
                     className="voteDown"
+                    data-testid="vote-down-button"
                     onClick={() => voteQuestion(question.slug, "down")}
                   >
                     <i className="bi bi-arrow-down-circle h2"></i>
