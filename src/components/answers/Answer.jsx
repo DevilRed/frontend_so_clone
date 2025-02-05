@@ -1,10 +1,34 @@
 import { Parser } from "html-to-react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { getEnvironments } from "../../helpers/getEnvironments";
+import axios from "axios";
+import { getConfig } from "../../helpers/utilities";
+import { fetchQuestionBySlug } from "../../redux/slices/questionSlice";
+import { toast } from "react-toastify";
+
+const { VITE_BASE_URL } = getEnvironments();
 
 export const Answer = ({ answer, question }) => {
-  const voteAnswer = async () => {
-    console.log("vote answer");
+  const dispatch = useDispatch();
+  const voteAnswer = async (answerId, type) => {
+    try {
+      const response = await axios.put(
+        `${VITE_BASE_URL}/api/vote/${answerId}/${type}/answer`,
+        null,
+        getConfig(token)
+      );
+      if (response.data.error) {
+        toast.error(response.data.error);
+      } else {
+        const slug = question.slug;
+        dispatch(fetchQuestionBySlug({ slug }));
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.log(error);
+    }
   };
   const { isLoggedIn, token, user } = useSelector((state) => state.user);
 

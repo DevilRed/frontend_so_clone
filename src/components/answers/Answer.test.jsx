@@ -1,14 +1,19 @@
 import { describe, it, expect, vi } from "vitest";
-import { screen } from "@testing-library/react";
+import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { renderWithProviders } from "../../../tests/test-util";
 import { Answer } from "./Answer";
 import { BrowserRouter } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 vi.mock("html-to-react", () => ({
   Parser: () => ({
     parse: (html) => html,
   }),
 }));
+
+vi.mock("axios");
+vi.mock("react-toastify");
 
 // mock data
 const mockAnswer = {
@@ -79,7 +84,7 @@ describe("Answer compnent", () => {
     expect(downvoteButton).toBeInTheDocument();
   });
 
-	it('should "Mark as best answer" button when user is question owner', () => {
+  it('should "Mark as best answer" button when user is question owner', () => {
     renderAnswerWithRouter({
       user: { isLoggedIn: true, token: "test-token", user: { id: 1 } },
     });
@@ -116,5 +121,24 @@ describe("Answer compnent", () => {
       },
     });
     expect(screen.queryByText("Mark as best answer")).not.toBeInTheDocument();
+  });
+
+  it("handles upvote correctly when logged in", async () => {
+    axios.put.mockResolvedValueOnce({
+      data: { message: "Upvoted successfully" },
+    });
+    renderAnswerWithRouter({
+      user: { isLoggedIn: true, token: "test-token", user: { id: 2 } },
+    });
+    const upvoteButton = screen.getByTestId("answer-vote-up");
+    fireEvent.click(upvoteButton);
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining(`/api/vote/${mockAnswer.id}/up/answer`),
+        null,
+        expect.any(Object)
+      );
+      expect(toast.success).toHaveBeenCalledWith("Upvoted successfully");
+    });
   });
 });
