@@ -78,4 +78,43 @@ describe("Answer compnent", () => {
     expect(upvoteButton).toBeInTheDocument();
     expect(downvoteButton).toBeInTheDocument();
   });
+
+	it('should "Mark as best answer" button when user is question owner', () => {
+    renderAnswerWithRouter({
+      user: { isLoggedIn: true, token: "test-token", user: { id: 1 } },
+    });
+    const bestAnswerButton = screen.getByText("Mark as best answer");
+    expect(bestAnswerButton).toBeInTheDocument();
+  });
+
+  it('does not show "Mark as best answer" button when answer is already best answer', () => {
+    const answerwithBest = { ...mockAnswer, best_answer: true };
+    renderWithProviders(
+      <BrowserRouter>
+        <Answer answer={answerwithBest} question={mockQuestion} />
+      </BrowserRouter>,
+      {
+        preloadedState: {
+          user: {
+            isLoggedIn: true,
+            token: "test-token",
+            user: { id: 1 },
+          },
+        },
+      }
+    );
+
+    expect(screen.queryByText("Mark as best answer")).not.toBeInTheDocument();
+  });
+
+  it('does not show "Mark as best answer button" when user is not question owner', () => {
+    renderAnswerWithRouter({
+      user: {
+        isLoggedIn: true,
+        token: "test-token",
+        user: { id: 999 },
+      },
+    });
+    expect(screen.queryByText("Mark as best answer")).not.toBeInTheDocument();
+  });
 });
