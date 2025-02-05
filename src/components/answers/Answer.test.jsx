@@ -54,4 +54,28 @@ describe("Answer compnent", () => {
       "test-image.jpg"
     );
   });
+
+  it("shows login links when user is not logged in", () => {
+    renderAnswerWithRouter({
+      user: { isLoggedIn: false, token: null },
+    });
+
+    const voteLinks = screen.getAllByRole("link", { name: "" });
+    expect(voteLinks).toHaveLength(2);
+    voteLinks.forEach((link) => {
+      expect(link).toHaveAttribute("href", "/login");
+    });
+  });
+
+  it("shows vote buttons when user is logged in", () => {
+    renderAnswerWithRouter({
+      user: { isLoggedIn: true, token: "test-token", user: { id: 2 } },
+    });
+
+    const upvoteButton = screen.getByTestId("answer-vote-up");
+    const downvoteButton = screen.getByTestId("answer-vote-down");
+
+    expect(upvoteButton).toBeInTheDocument();
+    expect(downvoteButton).toBeInTheDocument();
+  });
 });

@@ -16,12 +16,13 @@ export const Answer = ({ answer, question }) => {
             {isLoggedIn ? (
               <span
                 className="voteUp"
+                data-testid="answer-vote-up"
                 onClick={() => voteAnswer(answer.id, "up")}
               >
                 <i className="bi bi-arrow-up-circle h2"></i>
               </span>
             ) : (
-              <Link to="/login" className="voteUp">
+              <Link to="/login" className="voteUp" data-testid="answer-vote-up">
                 <i className="bi bi-arrow-up-circle h2"></i>
               </Link>
             )}
@@ -31,12 +32,17 @@ export const Answer = ({ answer, question }) => {
             {isLoggedIn ? (
               <span
                 className="voteDown"
+                data-testid="answer-vote-down"
                 onClick={() => voteAnswer(answer.id, "down")}
               >
                 <i className="bi bi-arrow-down-circle h2"></i>
               </span>
             ) : (
-              <Link to="/login" className="voteDown">
+              <Link
+                to="/login"
+                className="voteDown"
+                data-testid="answer-vote-down"
+              >
                 <i className="bi bi-arrow-down-circle h2"></i>
               </Link>
             )}
