@@ -148,8 +148,9 @@ describe("Ask Component", () => {
     });
   });
 
-  /* it("handles validation errors", async () => {
-    const validationErrors = {
+  it("handles validation errors", async () => {
+    // mock backend response, if API would have been done
+    /* const validationErrors = {
       response: {
         status: 422,
         data: {
@@ -161,16 +162,25 @@ describe("Ask Component", () => {
       },
     };
 
-    axios.post.mockRejectedValueOnce(validationErrors);
+    axios.post.mockRejectedValueOnce(validationErrors); */
 
-    renderComponent();
+    renderWithRouter({
+      user: { isLoggedIn: true, token: "test-token" },
+    });
 
     const submitButton = screen.getByRole("button", { name: /submit/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText("Title is required")).toBeInTheDocument();
-      expect(screen.getByText("Body is required")).toBeInTheDocument();
+      expect(axios.post).not.toHaveBeenCalled();
+
+      // Verify error messages are displayed
+      expect(
+        screen.getByText("The title field is required")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("The body field is required")
+      ).toBeInTheDocument();
     });
-  }); */
+  });
 });
