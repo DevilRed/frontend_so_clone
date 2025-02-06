@@ -72,6 +72,14 @@ export const Answer = ({ answer, question }) => {
             )}
 
             <span className="fw-bold">{answer?.score}</span>
+            {answer.best_answer ? (
+              <i
+                className="bi bi-check h2 text-success mt-2"
+                data-testid="best-answer-icon"
+              ></i>
+            ) : (
+              ""
+            )}
 
             {isLoggedIn ? (
               <span

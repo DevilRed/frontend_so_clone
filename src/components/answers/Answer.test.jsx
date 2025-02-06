@@ -159,4 +159,13 @@ describe("Answer component", () => {
       expect(toast.success).toHaveBeenCalledWith("Marked as best successfully");
     });
   });
+  it("should show an icon if answer is marked as best", () => {
+    mockAnswer.best_answer = true;
+    const container = renderWithProviders(
+      <BrowserRouter>
+        <Answer answer={mockAnswer} question={mockQuestion} />
+      </BrowserRouter>
+    );
+    expect(screen.getByTestId("best-answer-icon")).toBeInTheDocument();
+  });
 });
