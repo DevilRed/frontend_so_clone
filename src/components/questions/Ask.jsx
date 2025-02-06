@@ -68,6 +68,7 @@ export const Ask = () => {
                 <label htmlFor="title">Title*</label>
                 <input
                   type="text"
+                  id="title"
                   name="title"
                   className="form-control"
                   onChange={(e) =>
