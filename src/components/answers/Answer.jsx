@@ -32,6 +32,26 @@ export const Answer = ({ answer, question }) => {
   };
   const { isLoggedIn, token, user } = useSelector((state) => state.user);
 
+  const markAnswerAsBest = async (answerId) => {
+    try {
+      const response = await axios.put(
+        `${VITE_BASE_URL}/api/mark/${answerId}/best`,
+        null,
+        getConfig(token)
+      );
+      if (response.data.error) {
+        toast.error(response.data.error);
+      } else {
+        const slug = question.slug;
+        dispatch(fetchQuestionBySlug({ slug }));
+        toast.success(response.data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.log(error);
+    }
+  };
+
   return (
     <div className="card my-2">
       <div className="card-body">
@@ -90,7 +110,11 @@ export const Answer = ({ answer, question }) => {
           {isLoggedIn &&
             question.user.id === user.id &&
             !answer.best_answer && (
-              <button className="btn btn-sm btn-success">
+              <button
+                className="btn btn-sm btn-success"
+                data-testid="btn-mark-as-best"
+                onClick={() => markAnswerAsBest(answer.id)}
+              >
                 Mark as best answer
               </button>
             )}

@@ -45,7 +45,7 @@ const renderAnswerWithRouter = (preloadedState = {}) => {
   );
 };
 
-describe("Answer compnent", () => {
+describe("Answer component", () => {
   it("should render answer data correctly", () => {
     renderAnswerWithRouter({
       user: { isLoggedIn: false, token: null },
@@ -139,6 +139,24 @@ describe("Answer compnent", () => {
         expect.any(Object)
       );
       expect(toast.success).toHaveBeenCalledWith("Upvoted successfully");
+    });
+  });
+  it("mark answer as best if user is question owner", async () => {
+    axios.put.mockResolvedValueOnce({
+      data: { message: "Marked as best successfully" },
+    });
+    renderAnswerWithRouter({
+      user: { isLoggedIn: true, token: "test-token", user: { id: 1 } },
+    });
+    const markButton = screen.getByTestId("btn-mark-as-best");
+    fireEvent.click(markButton);
+    await waitFor(() => {
+      expect(axios.put).toHaveBeenCalledWith(
+        expect.stringContaining(`/api/mark/${mockAnswer.id}/best`),
+        null,
+        expect.any(Object)
+      );
+      expect(toast.success).toHaveBeenCalledWith("Marked as best successfully");
     });
   });
 });
