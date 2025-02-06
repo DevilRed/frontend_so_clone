@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen, fireEvent, waitFor } from "@testing-library/react";
 import { BrowserRouter, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -29,29 +29,22 @@ const renderWithRouter = (preloadedState = {}) => {
     </BrowserRouter>
   );
 };
+// mock react-quill
+vi.mock("react-quill", () => ({
+  __esModule: true,
+  default: ({ value, onChange }) => (
+    <div data-testid="quill-editor">
+      <textarea
+        data-testid="quill-textarea"
+        aria-label="body"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  ),
+}));
 
 describe("Ask Component", () => {
-  /* const mockStore = {
-    getState: () => ({
-      user: {
-        isLoggedIn: true,
-        token: "test-token",
-      },
-    }),
-    subscribe: jest.fn(),
-    dispatch: jest.fn(),
-  }; */
-
-  /* const renderComponent = () => {
-    return render(
-      <Provider store={mockStore}>
-        <BrowserRouter>
-          <Ask />
-        </BrowserRouter>
-      </Provider>
-    );
-  }; */
-
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -87,19 +80,71 @@ describe("Ask Component", () => {
     const titleInput = screen.getByLabelText(/title/i);
     fireEvent.change(titleInput, { target: { value: "Test Question" } });
 
+    // Set body content using mocked ReactQuill
+    const bodyInput = screen.getByLabelText(/body/i);
+    fireEvent.change(bodyInput, { target: { value: "Test Question Body" } });
+
     const submitButton = screen.getByRole("button", { name: /submit/i });
     fireEvent.click(submitButton);
 
     await waitFor(() => {
       expect(axios.post).toHaveBeenCalledWith(
         expect.stringContaining("/api/question/store"),
-        expect.objectContaining({ title: "Test Question" }),
+        expect.objectContaining({
+          title: "Test Question",
+          body: "Test Question Body",
+          tags: [],
+        }),
         expect.any(Object)
       );
       expect(toast.success).toHaveBeenCalledWith(
         "Question created successfully"
       );
       expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+  });
+
+  it("prevents submission when required fields are empty", async () => {
+    // Mock the API to return validation errors, not required since I added frontend validation
+    /* axios.post.mockRejectedValueOnce({
+      response: {
+        status: 422,
+        data: {
+          errors: {
+            title: ["The title field is required"],
+            body: ["The body field is required"],
+          },
+        },
+      },
+    }); */
+    renderWithRouter({
+      user: { isLoggedIn: true, token: "test-token" },
+    });
+
+    const submitButton = screen.getByRole("button", { name: /submit/i });
+    fireEvent.click(submitButton);
+
+    await waitFor(() => {
+      // Verify API was called with empty fields, expect required if API call is done
+      /* expect(axios.post).toHaveBeenCalledWith(
+        expect.stringContaining("/api/question/store"),
+        {
+          title: "",
+          body: "",
+          tags: [],
+        },
+        expect.any(Object)
+      ); */
+      // frontend validation added
+      expect(axios.post).not.toHaveBeenCalled();
+
+      // Verify error messages are displayed
+      expect(
+        screen.getByText("The title field is required")
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("The body field is required")
+      ).toBeInTheDocument();
     });
   });
 

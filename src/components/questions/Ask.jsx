@@ -35,8 +35,14 @@ export const Ask = () => {
   };
   const storeQuestion = async (e) => {
     e.preventDefault();
-    // console.log(question);
-    // return;
+    // Add front-end validation
+    if (!question.title.trim() || !question.body.trim()) {
+      setErrors({
+        title: ["The title field is required"],
+        body: ["The body field is required"],
+      });
+      return;
+    }
     try {
       const response = await axios.post(
         `${VITE_BASE_URL}/api/question/store`,
