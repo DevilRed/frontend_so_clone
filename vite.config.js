@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { fileURLToPath } from "url";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,5 +14,11 @@ export default defineConfig({
     //css: true,
     include: ["src/**/*.test.{js,jsx,ts,tsx}"],
     exclude: ["node_modules", "dist"],
+    includeSource: ["src/**/*.{js,ts,vue}"], // Ensures Vitest includes sources
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+      },
+    },
   },
 });
