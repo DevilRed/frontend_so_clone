@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { getEnvironments } from "../../helpers/getEnvironments";
 import { Answer } from "../answers/Answer";
+import { AddAnswer } from "./AddAnswer";
 
 const { VITE_BASE_URL } = getEnvironments();
 
@@ -144,6 +145,7 @@ export const Question = () => {
             </h5>
           </div>
           <div className="card-body">
+            {isLoggedIn && <AddAnswer />}
             {question?.answers?.length > 0 &&
               question.answers.map((answer) => (
                 <Answer key={answer.id} answer={answer} question={question} />

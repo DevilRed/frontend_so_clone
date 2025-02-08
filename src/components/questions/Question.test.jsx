@@ -24,6 +24,14 @@ vi.mock("html-to-react", () => ({
   }),
 }));
 
+vi.mock("./AddAnswer", async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    default: () => <div data-testid="add-answer-form">add form</div>,
+  };
+});
+
 // Mock question data
 const mockQuestion = {
   title: "Test Question",
@@ -197,5 +205,14 @@ describe("Question Component", () => {
     await waitFor(() => {
       expect(toast.error).toHaveBeenCalledWith(errorMessage);
     });
+  });
+  it("shows add answer component to logged in user only", async () => {
+    render(
+      <TestWrapper store={store}>
+        <Question />
+      </TestWrapper>
+    );
+    const addAnswerForm = await screen.findByText(/add your answer/i);
+    expect(addAnswerForm).toBeInTheDocument();
   });
 });
