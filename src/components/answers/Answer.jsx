@@ -51,9 +51,33 @@ export const Answer = ({ answer, question }) => {
       console.log(error);
     }
   };
+  const renderAnswerActions = () =>
+    answer.user.id === user?.id && (
+      <div className="card-header bg-white d-flex justify-content-end">
+        <div className="dropdown ms-auto">
+          <i
+            className="bi bi-three-dots-vertical"
+            data-bs-toggle="dropdown"
+          ></i>
+          <ul className="dropdown-menu">
+            <li>
+              <Link className="dropdown-item" to={`/edit/answer/${answer.id}`}>
+                <i className="bi bi-pen mx-2 text-warning">Edit</i>
+              </Link>
+            </li>
+            <li>
+              <span className="dropdown-item" style={{ cursor: "pointer" }}>
+                <i className="bi bi-trash mx-2 text-danger">Delete</i>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    );
 
   return (
     <div className="card my-2">
+      {renderAnswerActions()}
       <div className="card-body">
         <div className="row">
           <div className="col-md-3 d-flex flex-column align-items-center">
