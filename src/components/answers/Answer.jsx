@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 
 const { VITE_BASE_URL } = getEnvironments();
 
-export const Answer = ({ answer, question }) => {
+export const Answer = ({ answer, question, onDeleteAnswer }) => {
   const dispatch = useDispatch();
   const voteAnswer = async (answerId, type) => {
     try {
@@ -62,11 +62,15 @@ export const Answer = ({ answer, question }) => {
           <ul className="dropdown-menu">
             <li>
               <Link className="dropdown-item" to={`/edit/answer/${answer.id}`}>
-                <i className="bi bi-pen mx-2 text-warning">Edit</i>
+                <i className="bi bi-pen mx-2 text-warning">Edit}</i>
               </Link>
             </li>
             <li>
-              <span className="dropdown-item" style={{ cursor: "pointer" }}>
+              <span
+                className="dropdown-item"
+                style={{ cursor: "pointer" }}
+                onClick={() => onDeleteAnswer(answer.id)}
+              >
                 <i className="bi bi-trash mx-2 text-danger">Delete</i>
               </span>
             </li>

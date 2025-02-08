@@ -41,6 +41,21 @@ export const Question = () => {
       // console.log(error);
     }
   };
+  const deleteAnswer = async (answerId) => {
+    if (confirm("Are you sure want to delete this answer")) {
+      try {
+        const response = await axios.delete(
+          `${VITE_BASE_URL}/api/delete/${question.slug}/${answerId}/answer`,
+          getConfig(token)
+        );
+        const slug = question.slug;
+        dispatch(fetchQuestionBySlug({ slug }));
+        toast.success(response.data.message);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   if (error) {
     return (
@@ -148,7 +163,12 @@ export const Question = () => {
             {isLoggedIn && <AddAnswer />}
             {question?.answers?.length > 0 &&
               question.answers.map((answer) => (
-                <Answer key={answer.id} answer={answer} question={question} />
+                <Answer
+                  key={answer.id}
+                  answer={answer}
+                  question={question}
+                  onDeleteAnswer={deleteAnswer}
+                />
               ))}
           </div>
         </div>
