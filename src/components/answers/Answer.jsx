@@ -62,7 +62,7 @@ export const Answer = ({ answer, question, onDeleteAnswer }) => {
           <ul className="dropdown-menu">
             <li>
               <Link className="dropdown-item" to={`/edit/answer/${answer.id}`}>
-                <i className="bi bi-pen mx-2 text-warning">Edit}</i>
+                <i className="bi bi-pen mx-2 text-warning">Edit</i>
               </Link>
             </li>
             <li>
