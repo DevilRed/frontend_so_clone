@@ -1,5 +1,5 @@
 import { useState } from "react";
-import ReactQuill from "react-quill"; // 15.07
+import ReactQuill from "react-quill";
 import useValidation from "../../hooks/useValidation";
 import { Spinner } from "../layouts/Spinner";
 import axios from "axios";
@@ -18,7 +18,7 @@ export const AddAnswer = () => {
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState([]);
   const dispatch = useDispatch();
-  const { question, loading } = useSelector((state) => state.questions);
+  const { question } = useSelector((state) => state.questions);
   const { token } = useSelector((state) => state.user);
 
   const storeAnswer = async (e) => {
